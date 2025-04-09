@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام إدارة التراخيص - برق</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- القائمة الجانبية -->
+      <nav class="col-md-3 col-lg-2 d-md-block bg-dark sidebar">
+        <div class="position-sticky pt-3">
+          <div class="text-center mb-4">
+            <h3 class="text-light">برق</h3>
+            <p class="text-light fs-6">نظام إدارة التراخيص</p>
+          </div>
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link active" id="dashboard-link" href="#">
+                <i class="bi bi-speedometer2 me-2"></i>
+                لوحة التحكم
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="licenses-link" href="#">
+                <i class="bi bi-key me-2"></i>
+                التراخيص
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="customers-link" href="#">
+                <i class="bi bi-people me-2"></i>
+                العملاء
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="products-link" href="#">
+                <i class="bi bi-box me-2"></i>
+                المنتجات
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="statistics-link" href="#">
+                <i class="bi bi-graph-up me-2"></i>
+                الإحصائيات
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="settings-link" href="#">
+                <i class="bi bi-gear me-2"></i>
+                الإعدادات
+              </a>
+            </li>
+          </ul>
+          <hr class="text-light">
+          <div class="text-center mb-3">
+            <button class="btn btn-outline-light btn-sm" id="logout-btn">
+              <i class="bi bi-box-arrow-right me-2"></i>
+              تسجيل الخروج
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- المحتوى الرئيسي -->
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <!-- عنصر عرض رسائل التنبيه -->
+        <div id="alert-placeholder" class="alert-container mt-3"></div>
+        
+        <!-- قسم كلمة المرور المبدئية للوصول -->
+        <div id="pre-auth-section" class="auth-section">
+          <div class="auth-container">
+            <div class="card shadow">
+              <div class="card-body p-5">
+                <h2 class="text-center mb-4">التحقق من الوصول</h2>
+                <form id="pre-auth-form">
+                  <div class="mb-4">
+                    <label for="access-password" class="form-label">كلمة مرور الوصول</label>
+                    <input type="password" class="form-control" id="access-password" placeholder="أدخل كلمة مرور الوصول" required>
+                  </div>
+                  <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">دخول</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- قسم تسجيل الدخول -->
+        <div id="login-section" class="auth-section">
+          <div class="auth-container">
+            <div class="card shadow">
+              <div class="card-body p-5">
+                <h2 class="text-center mb-4">تسجيل الدخول</h2>
+                <form id="login-form">
+                  <div class="mb-3">
+                    <label for="username" class="form-label">اسم المستخدم</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="password" class="form-label">كلمة المرور</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                  </div>
+                  <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- لوحة التحكم -->
+        <div id="dashboard-section" class="content-section">
+          <h2 class="mt-4 mb-4">لوحة التحكم</h2>
+          
+          <!-- إحصائيات سريعة -->
+          <div class="row">
+            <div class="col-md-3 mb-4">
+              <div class="card border-primary h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="card-title text-muted">إجمالي التراخيص</h6>
+                      <h2 class="mb-0" id="total-licenses">-</h2>
+                    </div>
+                    <div class="fs-1 text-primary opacity-25">
+                      <i class="bi bi-key"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 mb-4">
+              <div class="card border-success h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="card-title text-muted">تراخيص نشطة</h6>
+                      <h2 class="mb-0" id="active-licenses">-</h2>
+                    </div>
+                    <div class="fs-1 text-success opacity-25">
+                      <i class="bi bi-check-circle"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 mb-4">
+              <div class="card border-warning h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="card-title text-muted">تراخيص منتهية</h6>
+                      <h2 class="mb-0" id="expired-licenses">-</h2>
+                    </div>
+                    <div class="fs-1 text-warning opacity-25">
+                      <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 mb-4">
+              <div class="card border-danger h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="card-title text-muted">تراخيص ملغاة</h6>
+                      <h2 class="mb-0" id="revoked-licenses">-</h2>
+                    </div>
+                    <div class="fs-1 text-danger opacity-25">
+                      <i class="bi bi-x-circle"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- آخر التراخيص -->
+          <div class="row">
+            <div class="col-md-8 mb-4">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5 class="mb-0">آخر التراخيص</h5>
+                  <button class="btn btn-sm btn-primary" id="add-license-btn">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    ترخيص جديد
+                  </button>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>رمز الترخيص</th>
+                          <th>المنتج</th>
+                          <th>العميل</th>
+                          <th>تاريخ الانتهاء</th>
+                          <th>الحالة</th>
+                          <th>الإجراءات</th>
+                        </tr>
+                      </thead>
+                      <tbody id="recent-licenses">
+                        <tr>
+                          <td colspan="6" class="text-center">جاري تحميل البيانات...</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- آخر الأنشطة -->
+            <div class="col-md-4 mb-4">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="mb-0">آخر الأنشطة</h5>
+                </div>
+                <div class="card-body p-0">
+                  <ul class="list-group list-group-flush" id="recent-activities">
+                    <li class="list-group-item text-center">جاري تحميل البيانات...</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- قسم التراخيص -->
+        <div id="licenses-section" class="content-section d-none">
+          <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+            <h2>التراخيص</h2>
+            <button class="btn btn-primary" id="add-license-btn2">
+              <i class="bi bi-plus-circle me-1"></i>
+              ترخيص جديد
+            </button>
+          </div>
+          
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-3">
+                  <input type="text" class="form-control" id="license-search" placeholder="بحث...">
+                </div>
+                <div class="col-md-3">
+                  <select class="form-select" id="license-status-filter">
+                    <option value="">كل الحالات</option>
+                    <option value="active">نشط</option>
+                    <option value="expired">منتهي</option>
+                    <option value="revoked">ملغي</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <select class="form-select" id="license-product-filter">
+                    <option value="">كل المنتجات</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <button class="btn btn-outline-secondary w-100" id="clear-license-filters">مسح الفلاتر</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>رمز الترخيص</th>
+                      <th>المنتج</th>
+                      <th>العميل</th>
+                      <th>تاريخ الإصدار</th>
+                      <th>تاريخ الانتهاء</th>
+                      <th>الأجهزة</th>
+                      <th>الحالة</th>
+                      <th>الإجراءات</th>
+                    </tr>
+                  </thead>
+                  <tbody id="licenses-table">
+                    <tr>
+                      <td colspan="8" class="text-center">جاري تحميل البيانات...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <div>
+                  <span id="licenses-count">0</span> ترخيص
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary me-2" id="prev-licenses-page" disabled>السابق</button>
+                  <span id="licenses-page">1</span>
+                  <button class="btn btn-sm btn-outline-secondary ms-2" id="next-licenses-page">التالي</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- قسم العملاء -->
+        <div id="customers-section" class="content-section d-none">
+          <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+            <h2>العملاء</h2>
+            <button class="btn btn-primary" id="add-customer-btn">
+              <i class="bi bi-plus-circle me-1"></i>
+              عميل جديد
+            </button>
+          </div>
+          
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <input type="text" class="form-control" id="customer-search" placeholder="بحث بالاسم أو رقم الهاتف...">
+                </div>
+                <div class="col-md-4">
+                  <select class="form-select" id="customer-type-filter">
+                    <option value="">كل أنواع العملاء</option>
+                    <option value="company">شركة</option>
+                    <option value="individual">فرد</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <button class="btn btn-outline-secondary w-100" id="clear-customer-filters">مسح الفلاتر</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>الرقم</th>
+                      <th>الاسم</th>
+                      <th>نوع العميل</th>
+                      <th>البريد الإلكتروني</th>
+                      <th>رقم الهاتف</th>
+                      <th>العنوان</th>
+                      <th>عدد التراخيص</th>
+                      <th>الإجراءات</th>
+                    </tr>
+                  </thead>
+                  <tbody id="customers-table">
+                    <tr>
+                      <td colspan="8" class="text-center">جاري تحميل البيانات...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <div>
+                  <span id="customers-count">0</span> عميل
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary me-2" id="prev-customers-page" disabled>السابق</button>
+                  <span id="customers-page">1</span>
+                  <button class="btn btn-sm btn-outline-secondary ms-2" id="next-customers-page">التالي</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- قسم المنتجات -->
+        <div id="products-section" class="content-section d-none">
+          <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+            <h2>المنتجات</h2>
+            <button class="btn btn-primary" id="add-product-btn">
+              <i class="bi bi-plus-circle me-1"></i>
+              منتج جديد
+            </button>
+          </div>
+          
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <input type="text" class="form-control" id="product-search" placeholder="بحث باسم المنتج أو الرمز...">
+                </div>
+                <div class="col-md-3">
+                  <select class="form-select" id="product-category-filter">
+                    <option value="">كل الفئات</option>
+                    <option value="pos">برامج نقاط البيع</option>
+                    <option value="erp">برامج إدارة موارد المؤسسات</option>
+                    <option value="accounting">برامج المحاسبة</option>
+                    <option value="inventory">برامج المخازن</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <button class="btn btn-outline-secondary w-100" id="clear-product-filters">مسح الفلاتر</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>الرمز</th>
+                      <th>اسم المنتج</th>
+                      <th>الفئة</th>
+                      <th>الإصدار</th>
+                      <th>السعر</th>
+                      <th>عدد التراخيص</th>
+                      <th>آخر تحديث</th>
+                      <th>الإجراءات</th>
+                    </tr>
+                  </thead>
+                  <tbody id="products-table">
+                    <tr>
+                      <td colspan="8" class="text-center">جاري تحميل البيانات...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <div>
+                  <span id="products-count">0</span> منتج
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary me-2" id="prev-products-page" disabled>السابق</button>
+                  <span id="products-page">1</span>
+                  <button class="btn btn-sm btn-outline-secondary ms-2" id="next-products-page">التالي</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- قسم الإحصائيات -->
+        <div id="statistics-section" class="content-section d-none">
+          <h2 class="mt-4 mb-4">الإحصائيات والتقارير</h2>
+          
+          <!-- فلاتر الإحصائيات -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label for="stats-date-range" class="form-label">النطاق الزمني</label>
+                  <select class="form-select" id="stats-date-range">
+                    <option value="month">الشهر الحالي</option>
+                    <option value="quarter">الربع الحالي</option>
+                    <option value="year" selected>السنة الحالية</option>
+                    <option value="all">كل الفترات</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="stats-product-filter" class="form-label">المنتج</label>
+                  <select class="form-select" id="stats-product-filter">
+                    <option value="">كل المنتجات</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="refresh-stats" class="form-label invisible">تحديث</label>
+                  <button class="btn btn-primary w-100" id="refresh-stats">
+                    <i class="bi bi-arrow-clockwise me-1"></i>
+                    تحديث الإحصائيات
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- حاوية الإحصائيات - إضافة العنصر المفقود -->
+          <div id="statistics-container">
+            <!-- هنا سيتم عرض الإحصائيات والرسوم البيانية عند تحميلها -->
+            <div class="text-center p-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">جاري التحميل...</span>
+              </div>
+              <p class="mt-2">جاري تحميل الإحصائيات...</p>
+            </div>
+          </div>
+          
+          <!-- ملخص الإحصائيات -->
+          <div class="row mb-4">
+            <div class="col-md-3">
+              <div class="card border-primary h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="card-title text-muted">إجمالي المبيعات</h6>
+                      <h2 class="mb-0" id="total-sales">-</h2>
+                    </div>
+                    <div class="fs-1 text-primary opacity-25">
+                      <i class="bi bi-currency-dollar"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card border-success h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="card-title text-muted">تراخيص نشطة</h6>
+                      <h2 class="mb-0" id="stats-active-licenses">-</h2>
+                    </div>
+                    <div class="fs-1 text-success opacity-25">
+                      <i class="bi bi-check-circle"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card border-info h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="card-title text-muted">إجمالي العملاء</h6>
+                      <h2 class="mb-0" id="stats-customers-count">-</h2>
+                    </div>
+                    <div class="fs-1 text-info opacity-25">
+                      <i class="bi bi-people"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card border-warning h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="card-title text-muted">معدل التجديد</h6>
+                      <h2 class="mb-0" id="renewal-rate">-</h2>
+                    </div>
+                    <div class="fs-1 text-warning opacity-25">
+                      <i class="bi bi-arrow-repeat"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- الرسوم البيانية -->
+          <div class="row mb-4">
+            <div class="col-md-6 mb-4">
+              <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5 class="mb-0">حالات التراخيص</h5>
+                </div>
+                <div class="card-body">
+                  <div class="chart-container">
+                    <canvas id="license-status-chart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-4">
+              <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5 class="mb-0">التراخيص لكل منتج</h5>
+                </div>
+                <div class="card-body">
+                  <div class="chart-container">
+                    <canvas id="licenses-per-product-chart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 mb-4">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5 class="mb-0">التراخيص الجديدة شهرياً</h5>
+                </div>
+                <div class="card-body">
+                  <div class="chart-container">
+                    <canvas id="monthly-licenses-chart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- إحصائيات مفصلة -->
+          <div class="row mb-4">
+            <div class="col-md-6 mb-4">
+              <div class="card h-100">
+                <div class="card-header">
+                  <h5 class="mb-0">أفضل 5 منتجات مبيعاً</h5>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>المنتج</th>
+                          <th>عدد التراخيص</th>
+                          <th>إجمالي المبيعات</th>
+                          <th>النسبة</th>
+                        </tr>
+                      </thead>
+                      <tbody id="top-products-table">
+                        <tr>
+                          <td colspan="4" class="text-center">جاري تحميل البيانات...</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-4">
+              <div class="card h-100">
+                <div class="card-header">
+                  <h5 class="mb-0">أفضل 5 عملاء</h5>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>العميل</th>
+                          <th>عدد التراخيص</th>
+                          <th>إجمالي المبيعات</th>
+                          <th>آخر نشاط</th>
+                        </tr>
+                      </thead>
+                      <tbody id="top-customers-table">
+                        <tr>
+                          <td colspan="4" class="text-center">جاري تحميل البيانات...</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- إحصائيات أخرى -->
+          <div class="row mb-4">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="mb-0">إحصائيات إضافية</h5>
+                </div>
+                <div class="card-body">
+                  <div class="row g-3">
+                    <div class="col-md-3">
+                      <div class="card">
+                        <div class="card-body">
+                          <h6>نسبة تفعيل النسخ التجريبية</h6>
+                          <h3 class="mt-3" id="trial-activation-rate">-</h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="card">
+                        <div class="card-body">
+                          <h6>متوسط مدة الترخيص</h6>
+                          <h3 class="mt-3" id="avg-license-duration">-</h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="card">
+                        <div class="card-body">
+                          <h6>معدل نمو العملاء</h6>
+                          <h3 class="mt-3" id="customer-growth-rate">-</h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="card">
+                        <div class="card-body">
+                          <h6>القيمة العمرية للعميل</h6>
+                          <h3 class="mt-3" id="customer-lifetime-value">-</h3>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- قسم الإعدادات -->
+        <div id="settings-section" class="content-section d-none">
+          <div class="container-fluid py-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h2 class="page-title"><i class="bi bi-gear-fill me-2"></i>إعدادات النظام</h2>
+            </div>
+
+            <!-- بطاقة إعدادات الأدمن -->
+            <div class="card">
+              <div class="card-header">
+                <h5 class="mb-0">إعدادات المستخدم المسؤول</h5>
+              </div>
+              <div class="card-body">
+                <form id="admin-settings-form">
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="admin-username" class="form-label">اسم المستخدم</label>
+                      <input type="text" class="form-control" id="admin-username" placeholder="أدخل اسم المستخدم">
+                    </div>
+                    <div class="col-md-6">
+                      <label for="admin-name" class="form-label">الاسم الكامل</label>
+                      <input type="text" class="form-control" id="admin-name" placeholder="أدخل الاسم الكامل">
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="admin-email" class="form-label">البريد الإلكتروني</label>
+                    <input type="email" class="form-control" id="admin-email" placeholder="أدخل البريد الإلكتروني">
+                  </div>
+                  <hr>
+                  <h6>تغيير كلمة المرور</h6>
+                  <div class="mb-3">
+                    <label for="current-password" class="form-label">كلمة المرور الحالية</label>
+                    <input type="password" class="form-control" id="current-password" placeholder="أدخل كلمة المرور الحالية">
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="new-password" class="form-label">كلمة المرور الجديدة</label>
+                      <input type="password" class="form-control" id="new-user-password" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="confirm-password" class="form-label">تأكيد كلمة المرور</label>
+                      <input type="password" class="form-control" id="confirm-password" placeholder="أعد إدخال كلمة المرور الجديدة">
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-end mt-4">
+                    <button type="button" class="btn btn-primary" id="save-admin-settings">
+                      <i class="bi bi-save me-1"></i> حفظ الإعدادات
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- بطاقة إعدادات الخادم -->
+            <div class="card mt-4">
+              <div class="card-header">
+                <h5 class="mb-0">إعدادات الخادم</h5>
+              </div>
+              <div class="card-body">
+                <form id="server-settings-form">
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="server-name" class="form-label">اسم الخادم</label>
+                      <input type="text" class="form-control" id="server-name" placeholder="أدخل اسم الخادم">
+                    </div>
+                    <div class="col-md-6">
+                      <label for="server-url" class="form-label">عنوان URL</label>
+                      <input type="text" class="form-control" id="server-url" placeholder="أدخل عنوان URL للخادم">
+                    </div>
+                  </div>
+                  
+                  <h6 class="mt-4">إعدادات SMTP</h6>
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="smtp-host" class="form-label">مضيف SMTP</label>
+                      <input type="text" class="form-control" id="smtp-host" placeholder="أدخل عنوان مضيف SMTP">
+                    </div>
+                    <div class="col-md-6">
+                      <label for="smtp-port" class="form-label">منفذ SMTP</label>
+                      <input type="text" class="form-control" id="smtp-port" placeholder="أدخل منفذ SMTP">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="smtp-user" class="form-label">اسم مستخدم SMTP</label>
+                      <input type="text" class="form-control" id="smtp-user" placeholder="أدخل اسم مستخدم SMTP">
+                    </div>
+                    <div class="col-md-6">
+                      <label for="smtp-password" class="form-label">كلمة مرور SMTP</label>
+                      <input type="password" class="form-control" id="smtp-password" placeholder="أدخل كلمة مرور SMTP">
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="smtp-from" class="form-label">البريد الإلكتروني المرسل</label>
+                    <input type="email" class="form-control" id="smtp-from" placeholder="أدخل عنوان البريد الإلكتروني المرسل">
+                  </div>
+                  
+                  <h6 class="mt-4">إعدادات التراخيص</h6>
+                  <div class="row mb-3">
+                    <div class="col-md-4">
+                      <label for="license-format" class="form-label">تنسيق التراخيص</label>
+                      <input type="text" class="form-control" id="license-format" placeholder="مثال: XXXX-XXXX-XXXX-XXXX">
+                    </div>
+                    <div class="col-md-4">
+                      <label for="max-activations-default" class="form-label">عدد أجهزة التفعيل الافتراضي</label>
+                      <input type="number" class="form-control" id="max-activations-default" placeholder="1" min="1">
+                    </div>
+                    <div class="col-md-4">
+                      <label for="trial-days-default" class="form-label">عدد أيام النسخة التجريبية</label>
+                      <input type="number" class="form-control" id="trial-days-default" placeholder="30" min="1">
+                    </div>
+                  </div>
+                  
+                  <h6 class="mt-4">إعدادات API</h6>
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="api-key" class="form-label">مفتاح API</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="api-key" placeholder="مفتاح API الحالي" readonly>
+                        <button class="btn btn-outline-secondary" type="button" id="generate-api-key">
+                          <i class="bi bi-arrow-repeat"></i> توليد مفتاح جديد
+                        </button>
+                        <button class="btn btn-outline-primary" type="button" id="copy-api-key">
+                          <i class="bi bi-clipboard"></i> نسخ
+                        </button>
+                      </div>
+                      <small class="form-text text-muted">هذا المفتاح ضروري للاتصال بخدمات API للتحقق من التراخيص.</small>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="api-request-limit" class="form-label">الحد الأقصى للطلبات اليومية</label>
+                      <input type="number" class="form-control" id="api-request-limit" placeholder="1000" min="1">
+                      <small class="form-text text-muted">الحد الأقصى لعدد طلبات API المسموح بها في اليوم. 0 = غير محدود.</small>
+                    </div>
+                  </div>
+                  
+                  <div class="d-flex justify-content-end mt-4">
+                    <button type="button" class="btn btn-primary" id="save-server-settings">
+                      <i class="bi bi-save me-1"></i> حفظ إعدادات الخادم
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نموذج إضافة مستخدم جديد -->
+  <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addUserModalLabel">إضافة مستخدم جديد</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body">
+          <form id="add-user-form">
+            <div class="mb-3">
+              <label for="new-username" class="form-label">اسم المستخدم</label>
+              <input type="text" class="form-control" id="new-username" required>
+            </div>
+            <div class="mb-3">
+              <label for="new-fullname" class="form-label">الاسم الكامل</label>
+              <input type="text" class="form-control" id="new-fullname" required>
+            </div>
+            <div class="mb-3">
+              <label for="new-email" class="form-label">البريد الإلكتروني</label>
+              <input type="email" class="form-control" id="new-email" required>
+            </div>
+            <div class="mb-3">
+              <label for="new-password" class="form-label">كلمة المرور</label>
+              <input type="password" class="form-control" id="new-user-password" required>
+            </div>
+            <div class="mb-3">
+              <label for="new-role" class="form-label">الدور</label>
+              <select class="form-select" id="new-role" required>
+                <option value="admin">مدير النظام</option>
+                <option value="user">مستخدم</option>
+                <option value="viewer">مشاهد فقط</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+          <button type="button" class="btn btn-primary">حفظ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نموذج تعديل مستخدم -->
+  <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editUserModalLabel">تعديل بيانات المستخدم</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body">
+          <form id="edit-user-form">
+            <div class="mb-3">
+              <label for="edit-username" class="form-label">اسم المستخدم</label>
+              <input type="text" class="form-control" id="edit-username" value="admin" readonly>
+            </div>
+            <div class="mb-3">
+              <label for="edit-fullname" class="form-label">الاسم الكامل</label>
+              <input type="text" class="form-control" id="edit-fullname" value="المدير" required>
+            </div>
+            <div class="mb-3">
+              <label for="edit-email" class="form-label">البريد الإلكتروني</label>
+              <input type="email" class="form-control" id="edit-email" value="admin@example.com" required>
+            </div>
+            <div class="mb-3">
+              <label for="edit-role" class="form-label">الدور</label>
+              <select class="form-select" id="edit-role" required>
+                <option value="admin" selected>مدير النظام</option>
+                <option value="user">مستخدم</option>
+                <option value="viewer">مشاهد فقط</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="edit-active" checked>
+                <label class="form-check-label" for="edit-active">مستخدم نشط</label>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+          <button type="button" class="btn btn-primary">حفظ التغييرات</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نموذج الترخيص -->
+  <div class="modal fade" id="license-modal" tabindex="-1" aria-labelledby="license-modal-title" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="license-modal-title">إضافة ترخيص جديد</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body">
+          <form id="license-form">
+            <input type="hidden" id="license-id">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="license-product" class="form-label">المنتج</label>
+                <select class="form-select" id="license-product" required>
+                  <option value="">اختر المنتج</option>
+                  <!-- سيتم تعبئة الخيارات عبر JavaScript -->
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="license-customer" class="form-label">العميل</label>
+                <select class="form-select" id="license-customer" required>
+                  <option value="">اختر العميل</option>
+                  <!-- سيتم تعبئة الخيارات عبر JavaScript -->
+                </select>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="license-type" class="form-label">نوع الترخيص</label>
+                <select class="form-select" id="license-type" onchange="toggleExpiryDateVisibility()" required>
+                  <option value="subscription">اشتراك</option>
+                  <option value="trial">تجريبي</option>
+                  <option value="perpetual">دائم</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="license-max-activations" class="form-label">عدد أجهزة التفعيل</label>
+                <input type="number" class="form-control" id="license-max-activations" min="1" value="1" required>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="license-start-date" class="form-label">تاريخ البدء</label>
+                <input type="date" class="form-control" id="license-start-date" required>
+              </div>
+              <div class="col-md-6" id="license-expiry-date-group">
+                <label for="license-expiry-date" class="form-label">تاريخ الانتهاء</label>
+                <input type="date" class="form-control" id="license-expiry-date">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="license-notes" class="form-label">ملاحظات</label>
+              <textarea class="form-control" id="license-notes" rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+          <button type="button" class="btn btn-primary" onclick="saveLicense()">حفظ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نموذج العميل -->
+  <div class="modal fade" id="customer-modal" tabindex="-1" aria-labelledby="customer-modal-title" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="customer-modal-title">إضافة عميل جديد</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body">
+          <form id="customer-form">
+            <input type="hidden" id="customer-id">
+            <div class="row mb-3">
+              <div class="col-md-8">
+                <label for="customer-name" class="form-label">اسم العميل</label>
+                <input type="text" class="form-control" id="customer-name" required>
+              </div>
+              <div class="col-md-4">
+                <label for="customer-type" class="form-label">نوع العميل</label>
+                <select class="form-select" id="customer-type" onchange="toggleCompanyFields()" required>
+                  <option value="company">شركة</option>
+                  <option value="individual">فرد</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="customer-email" class="form-label">البريد الإلكتروني</label>
+                <input type="email" class="form-control" id="customer-email">
+              </div>
+              <div class="col-md-6">
+                <label for="customer-phone" class="form-label">رقم الهاتف</label>
+                <input type="text" class="form-control" id="customer-phone">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="customer-address" class="form-label">العنوان</label>
+              <input type="text" class="form-control" id="customer-address">
+            </div>
+            <div id="company-fields-group">
+              <div class="row mb-3 company-field">
+                <div class="col-md-6">
+                  <label for="customer-commercial-register" class="form-label">السجل التجاري</label>
+                  <input type="text" class="form-control" id="customer-commercial-register">
+                </div>
+                <div class="col-md-6">
+                  <label for="customer-tax-number" class="form-label">الرقم الضريبي</label>
+                  <input type="text" class="form-control" id="customer-tax-number">
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="customer-notes" class="form-label">ملاحظات</label>
+              <textarea class="form-control" id="customer-notes" rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+          <button type="button" class="btn btn-primary" onclick="saveCustomer()">حفظ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نموذج المنتج -->
+  <div class="modal fade" id="product-modal" tabindex="-1" aria-labelledby="product-modal-title" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="product-modal-title">إضافة منتج جديد</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body">
+          <form id="product-form">
+            <input type="hidden" id="product-id">
+            <div class="row mb-3">
+              <div class="col-md-8">
+                <label for="product-name" class="form-label">اسم المنتج</label>
+                <input type="text" class="form-control" id="product-name" required>
+              </div>
+              <div class="col-md-4">
+                <label for="product-code" class="form-label">رمز المنتج</label>
+                <input type="text" class="form-control" id="product-code" required>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="product-price" class="form-label">السعر</label>
+                <input type="number" class="form-control" id="product-price" min="0" step="0.01" required>
+              </div>
+              <div class="col-md-6">
+                <label for="product-category" class="form-label">التصنيف</label>
+                <input type="text" class="form-control" id="product-category">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="product-description" class="form-label">وصف المنتج</label>
+              <textarea class="form-control" id="product-description" rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+          <button type="button" class="btn btn-primary" onclick="saveProduct()">حفظ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="saveCustomer.js"></script>
+  <script src="app.js"></script>
+</body>
+</html> 
